@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>AIDatePickerController</id>
+        <version>1.0.0</version>
+        <title>AIDatePickerController</title>
+        <authors>Marc Bruins</authors>
+        <projectUrl>https://github.com/MarcBruins/AIDatePickerController-Xamarin-iOS</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>An iOS Datepicker control for Xamarin.iOS</description>
+    </metadata>
+    <files>
+        <file src="bin\Release\DatePicker.dll" target="lib\Xamarin.iOS10\DatePicker.dll" />
+    </files>
+</package>
