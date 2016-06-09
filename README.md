@@ -2,7 +2,7 @@ Port of https://github.com/alikaragoz/AIDatePickerController
 
 Credits go to Ali Karagoz(https://twitter.com/alikaragoz)
 
-*Including a sample project on how to set this up in Xamarin-iOS
+*Including a sample project on how to set this up in Xamarin-iOS with DateTime instead of NSDate.
 
 AIDatePickerController
 --------------------
