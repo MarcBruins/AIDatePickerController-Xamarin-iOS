@@ -1,9 +1,5 @@
 Port of https://github.com/alikaragoz/AIDatePickerController
 
-Credits go to Ali Karagoz(https://twitter.com/alikaragoz)
-
-*Including a sample project on how to set this up in Xamarin-iOS with DateTime instead of NSDate.
-
 AIDatePickerController
 --------------------
 
@@ -30,10 +26,13 @@ btn.TouchUpInside += (sender, e) =>
 	this.PresentViewController(picker, true, null);
 };
 ```
+## Credits
+Credits go to Ali Karagoz(https://twitter.com/alikaragoz)
+
 
 ## Contact
 
-Ali Karagoz
+Marc Bruins
 - http://www.marcbruins.nl
 - https://twitter.com/MarcBruins
 
