@@ -9,7 +9,7 @@ using System;
 using System.CodeDom.Compiler;
 using UIKit;
 
-namespace AIDatePickerController
+namespace DatePicker
 {
 	[Register("AIDatePickerController")]
 	partial class AIDatePickerController

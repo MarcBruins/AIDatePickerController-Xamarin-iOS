@@ -2,7 +2,7 @@
 using Foundation;
 using UIKit;
 
-namespace AIDatePickerController
+namespace DatePicker
 {
 	public partial class AIDatePickerController : UIViewController, IUIViewControllerAnimatedTransitioning, IUIViewControllerTransitioningDelegate
 	{
@@ -12,7 +12,7 @@ namespace AIDatePickerController
 			set;
 		} = 0.4;
 
-		protected UIDatePicker datePicker;
+		public UIDatePicker DatePicker;
 
 		public UIButton CancelButton;
 		public UIButton SelectButton;
@@ -25,7 +25,6 @@ namespace AIDatePickerController
 		public Action<AIDatePickerController> SelectAction;
 		public Action<AIDatePickerController> CancelAction;
 
-		private DateTime _initialDateTime;
 
 		private UIColor datePickerBackgroundColor = UIColor.White;
 		public UIColor DatePickerBackgroundColor
@@ -48,9 +47,14 @@ namespace AIDatePickerController
 			set { fontSize = value; UpdateUI(); }
 		}
 
+		public NSDateFormatter dateFormatter
+		{
+			get;
+			set;
+		} = new NSDateFormatter();
+
 		public AIDatePickerController(DateTime initialDateTime, Action<AIDatePickerController> selectAction, Action<AIDatePickerController> cancelAction) : base()
 		{
-			this._initialDateTime = initialDateTime;
 			this.SelectAction = selectAction;
 			this.CancelAction = cancelAction;
 
@@ -58,8 +62,9 @@ namespace AIDatePickerController
 			this.TransitioningDelegate = this;
 
 			// Date Picker
-			datePicker = new UIDatePicker();
-			datePicker.TranslatesAutoresizingMaskIntoConstraints = false;
+			DatePicker = new UIDatePicker();
+			DatePicker.TranslatesAutoresizingMaskIntoConstraints = false;
+			DatePicker.Date = initialDateTime.DateTimeToNSDate();
 
 			DimmedView = new UIView(this.View.Bounds);
 			DimmedView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
@@ -69,8 +74,8 @@ namespace AIDatePickerController
 
 		private void UpdateUI()
 		{
-			datePicker.BackgroundColor = DatePickerBackgroundColor;
-			datePicker.Mode = DatePickerMode;
+			DatePicker.BackgroundColor = DatePickerBackgroundColor;
+			DatePicker.Mode = DatePickerMode;
 
 			SelectButton.TitleLabel.Font = UIFont.BoldSystemFontOfSize(FontSize);
 			CancelButton.TitleLabel.Font = UIFont.SystemFontOfSize(FontSize);
@@ -84,7 +89,7 @@ namespace AIDatePickerController
 		public override void ViewDidLoad()
 		{
 			base.ViewDidLoad();
-		
+
 			this.View.BackgroundColor = UIColor.Clear;
 
 			DismissButton = new UIButton();
@@ -103,7 +108,7 @@ namespace AIDatePickerController
 			DatePickerContainerView.Layer.CornerRadius = 5.0f;
 			this.View.AddSubview(DatePickerContainerView);
 
-			DatePickerContainerView.AddSubview(datePicker);
+			DatePickerContainerView.AddSubview(DatePicker);
 
 			ButtonContainerView = new UIView();
 			ButtonContainerView.TranslatesAutoresizingMaskIntoConstraints = false;
@@ -135,9 +140,8 @@ namespace AIDatePickerController
 			};
 			ButtonContainerView.AddSubview(SelectButton);
 
-
 			var views = NSDictionary.FromObjectsAndKeys(
-				new NSObject[] { DismissButton, DatePickerContainerView, datePicker, ButtonContainerView, ButtonDividerView, CancelButton, SelectButton },
+				new NSObject[] { DismissButton, DatePickerContainerView, DatePicker, ButtonContainerView, ButtonDividerView, CancelButton, SelectButton },
 				new NSObject[] {
 					new NSString("DismissButton"), new NSString("DatePickerContainerView"), new NSString("datePicker"),
 					new NSString("ButtonContainerView"), new NSString("ButtonDividerView"), new NSString("CancelButton"),
@@ -211,7 +215,7 @@ namespace AIDatePickerController
 					{
 						this.DimmedView.Alpha = 0f;
 						var frame = fromViewController.View.Frame;
-						frame.Y = 0;
+						frame.Y = fromViewController.View.Bounds.Height;
 						fromViewController.View.Frame = frame;
 					},
 				   () =>

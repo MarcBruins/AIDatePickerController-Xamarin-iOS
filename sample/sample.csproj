@@ -106,9 +106,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AIDatePickerController\AIDatePickerController.csproj">
-      <Project>{F408AA7A-E614-44CA-AE75-7BF28E418D5F}</Project>
-      <Name>AIDatePickerController</Name>
+    <ProjectReference Include="..\DatePicker\DatePicker.csproj">
+      <Project>{1FD14F65-7BAE-42E6-80D4-7DC05658984B}</Project>
+      <Name>DatePicker</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

@@ -1,5 +1,5 @@
 ﻿using System;
-using AIDatePickerController;
+using DatePicker;
 using UIKit;
 
 namespace sample
@@ -22,15 +22,15 @@ namespace sample
 			base.ViewDidLoad();
 			// Perform any additional setup after loading the view, typically from a nib.
 
-			var picker = new AIDatePickerController.AIDatePickerController(DateTime.Now,
-												  (p) =>
-												  {
-
-												  },
-											 	(p) =>
-												 {
-													 this.DismissViewController(false,null);
-												 });
+			var picker = new AIDatePickerController(DateTime.Now.AddDays(1),
+			                                                               (p) => 
+																			{
+                                                                                Console.WriteLine(p.DatePicker.Date.ToString());
+																			},
+			                                                               (p) =>
+																			 {
+																				 this.DismissViewController(true,null);
+																			 });
 
 
 			btn.TouchUpInside += (sender, e) =>
