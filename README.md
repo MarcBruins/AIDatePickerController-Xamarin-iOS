@@ -27,7 +27,7 @@ btn.TouchUpInside += (sender, e) =>
 };
 ```
 ## Credits
-Credits go to Ali Karagoz(https://twitter.com/alikaragoz)
+Credits go to Ali Karagoz (https://twitter.com/alikaragoz)
 
 
 ## Contact
