@@ -13,22 +13,22 @@ AIDatePickerController
 
 ```objc
 var picker = new AIDatePickerController(DateTime.Now.AddDays(1),
-			                                                               (p) => 
-																			{
-                                                                                Console.WriteLine(p.DatePicker.Date.ToString());
-																			},
-			                                                               (p) =>
-																			 {
-																				 this.DismissViewController(true,null);
-																			 });
+               (p) => 
+		{
+			Console.WriteLine(p.DatePicker.Date.ToString());
+		},
+               (p) =>
+		{
+		this.DismissViewController(true,null);
+		 });
 
 
 		
 // Present it
-	        btn.TouchUpInside += (sender, e) =>
-			{
-				this.PresentViewController(picker, true, null);
-			};
+btn.TouchUpInside += (sender, e) =>
+{
+	this.PresentViewController(picker, true, null);
+};
 ```
 
 ## Contact
