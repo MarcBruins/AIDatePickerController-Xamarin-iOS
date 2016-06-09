@@ -6,7 +6,7 @@ Credits go to Ali Karagoz(https://twitter.com/alikaragoz)
 AIDatePickerController
 --------------------
 
-<p align="center"><img src="github-assets/aidatepickercontroller.gif"/></p>
+<p align="center"><img src="https://github.com/alikaragoz/AIDatePickerController/blob/master/github-assets/aidatepickercontroller.gif"/></p>
 
 ##Usage
 
