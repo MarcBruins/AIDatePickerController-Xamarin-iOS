@@ -6,142 +6,118 @@ namespace DatePicker
 {
 	public partial class AIDatePickerController : UIViewController, IUIViewControllerAnimatedTransitioning, IUIViewControllerTransitioningDelegate
 	{
-		public double AnimatedTransitionDuration
-		{
-			get;
-			set;
-		} = 0.4;
+        public double AnimatedTransitionDuration { get; set; } = 0.4;
+		public UIDatePickerMode Mode { get; set; } = UIDatePickerMode.Date;
+	    public UIColor BackgroundColor { get; set; } = UIColor.White;
+	    public DateTime SelectedDateTime { get; set; } = DateTime.Now;
+        public DateTime? MaximumDateTime { get; set; }
+        public DateTime? MinimumDateTime { get; set; }
+	    public int MinuteInterval { get; set; } = 1;
+        public string SelectText { get; set; }
+        public Action<AIDatePickerController> Select { get; set; }
+        public string CancelText { get; set; }
+        public Action<AIDatePickerController> Cancel { get; set; }
 
-		public UIDatePicker DatePicker;
-
-		public UIButton CancelButton;
-		public UIButton SelectButton;
-		public UIButton DismissButton;
-		public UIView ButtonDividerView;
-		public UIView ButtonContainerView;
-		public UIView DatePickerContainerView;
-		public UIView DimmedView;
-
-		public Action<AIDatePickerController> SelectAction;
-		public Action<AIDatePickerController> CancelAction;
+	    public float FontSize { get; set; } = 16;
+		public NSDateFormatter DateFormatter { get; set; } = new NSDateFormatter();
 
 
-		private UIColor datePickerBackgroundColor = UIColor.White;
-		public UIColor DatePickerBackgroundColor
-		{
-			get { return datePickerBackgroundColor; }
-			set { datePickerBackgroundColor = value; UpdateUI(); }
-		}
+	    UIView dimmedView;
 
-		private UIDatePickerMode datePickerMode = UIDatePickerMode.Date;
-		public UIDatePickerMode DatePickerMode
-		{
-			get { return datePickerMode; }
-			set { datePickerMode = value; UpdateUI(); }
-		}
-
-		private float fontSize = 16;
-		public float FontSize
-		{
-			get { return fontSize; }
-			set { fontSize = value; UpdateUI(); }
-		}
-
-		public NSDateFormatter dateFormatter
-		{
-			get;
-			set;
-		} = new NSDateFormatter();
-
-		public AIDatePickerController(DateTime initialDateTime, Action<AIDatePickerController> selectAction, Action<AIDatePickerController> cancelAction) : base()
-		{
-			this.SelectAction = selectAction;
-			this.CancelAction = cancelAction;
-
-			this.ModalPresentationStyle = UIModalPresentationStyle.Custom;
-			this.TransitioningDelegate = this;
-
-			// Date Picker
-			DatePicker = new UIDatePicker();
-			DatePicker.TranslatesAutoresizingMaskIntoConstraints = false;
-			DatePicker.Date = initialDateTime.DateTimeToNSDate();
-
-			DimmedView = new UIView(this.View.Bounds);
-			DimmedView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-			DimmedView.TintAdjustmentMode = UIViewTintAdjustmentMode.Dimmed;
-			DimmedView.BackgroundColor = UIColor.Black;
-		}
-
-		private void UpdateUI()
-		{
-			DatePicker.BackgroundColor = DatePickerBackgroundColor;
-			DatePicker.Mode = DatePickerMode;
-
-			SelectButton.TitleLabel.Font = UIFont.BoldSystemFontOfSize(FontSize);
-			CancelButton.TitleLabel.Font = UIFont.SystemFontOfSize(FontSize);
-		}
-
-		public override void LoadView()
-		{
-			base.LoadView();
-		}
 
 		public override void ViewDidLoad()
 		{
 			base.ViewDidLoad();
 
-			this.View.BackgroundColor = UIColor.Clear;
+			this.ModalPresentationStyle = UIModalPresentationStyle.Custom;
+			this.TransitioningDelegate = this;
+            this.View.BackgroundColor = UIColor.Clear;
 
-			DismissButton = new UIButton();
-			DismissButton.TranslatesAutoresizingMaskIntoConstraints = false;
-			DismissButton.UserInteractionEnabled = true;
-			DismissButton.TouchUpInside += (s, e) =>
+
+			// Date Picker
+			var datePicker = new UIDatePicker
 			{
-				CancelAction(this);
+                TranslatesAutoresizingMaskIntoConstraints = false,
+                Date = this.SelectedDateTime.ToNSDate(),
+                BackgroundColor = BackgroundColor,
+                Mode = Mode,
+                MinuteInterval = MinuteInterval
 			};
-			this.View.AddSubview(DismissButton);
+		    if (MinimumDateTime != null)
+		        datePicker.MinimumDate = MinimumDateTime.Value.ToNSDate();
 
-			DatePickerContainerView = new UIView();
-			DatePickerContainerView.TranslatesAutoresizingMaskIntoConstraints = false;
-			DatePickerContainerView.BackgroundColor = UIColor.White;
-			DatePickerContainerView.ClipsToBounds = true;
-			DatePickerContainerView.Layer.CornerRadius = 5.0f;
-			this.View.AddSubview(DatePickerContainerView);
+		    if (MaximumDateTime != null)
+		        datePicker.MaximumDate = MaximumDateTime.Value.ToNSDate();
 
-			DatePickerContainerView.AddSubview(DatePicker);
-
-			ButtonContainerView = new UIView();
-			ButtonContainerView.TranslatesAutoresizingMaskIntoConstraints = false;
-			ButtonContainerView.BackgroundColor = UIColor.White;
-			ButtonContainerView.Layer.CornerRadius = 5.0f;
-			this.View.AddSubview(ButtonContainerView);
-
-			ButtonDividerView = new UIView();
-			ButtonDividerView.TranslatesAutoresizingMaskIntoConstraints = false;
-			ButtonDividerView.BackgroundColor = UIColor.FromRGBA(205 / 255, 205 / 255, 205 / 255, 1);
-			this.View.AddSubview(ButtonDividerView);
-
-			CancelButton = new UIButton();
-			CancelButton.TranslatesAutoresizingMaskIntoConstraints = false;
-			CancelButton.SetTitle("Cancel", UIControlState.Normal);
-			CancelButton.SetTitleColor(UIColor.Red, UIControlState.Normal);
-			CancelButton.TouchUpInside += (s, e) =>
+		    dimmedView = new UIView(this.View.Bounds)
 			{
-				CancelAction(this);
+			    AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
+                TintAdjustmentMode = UIViewTintAdjustmentMode.Dimmed,
+                BackgroundColor = UIColor.Black
 			};
-			ButtonContainerView.AddSubview(CancelButton);
 
-			SelectButton = new UIButton(UIButtonType.System);
-			SelectButton.TranslatesAutoresizingMaskIntoConstraints = false;
-			SelectButton.SetTitle("Select", UIControlState.Normal);
-			SelectButton.TouchUpInside += (s, e) =>
+
+			var dismissButton = new UIButton
 			{
-				SelectAction(this);
+			    TranslatesAutoresizingMaskIntoConstraints = false,
+                UserInteractionEnabled = true
 			};
-			ButtonContainerView.AddSubview(SelectButton);
+			dismissButton.TouchUpInside += (s, e) =>
+			{
+				Cancel?.Invoke(this);
+			};
+			this.View.AddSubview(dismissButton);
+
+			var containerView = new UIView
+			{
+                ClipsToBounds = true,
+                BackgroundColor = UIColor.White,
+			    TranslatesAutoresizingMaskIntoConstraints = false
+			};
+			containerView.Layer.CornerRadius = 5.0f;
+			this.View.AddSubview(containerView);
+
+			containerView.AddSubview(datePicker);
+
+			var buttonContainerView = new UIView
+			{
+			    TranslatesAutoresizingMaskIntoConstraints = false,
+                BackgroundColor = UIColor.White
+			};
+			buttonContainerView.Layer.CornerRadius = 5.0f;
+			this.View.AddSubview(buttonContainerView);
+
+			var buttonDividerView = new UIView
+			{
+			    TranslatesAutoresizingMaskIntoConstraints = false,
+                BackgroundColor = UIColor.FromRGBA(205 / 255, 205 / 255, 205 / 255, 1)
+			};
+			this.View.AddSubview(buttonDividerView);
+
+			var cancelButton = new UIButton();
+			cancelButton.TranslatesAutoresizingMaskIntoConstraints = false;
+			cancelButton.SetTitle(CancelText, UIControlState.Normal);
+			cancelButton.SetTitleColor(UIColor.Red, UIControlState.Normal);
+
+			cancelButton.TitleLabel.Font = UIFont.SystemFontOfSize(FontSize);
+			cancelButton.TouchUpInside += (s, e) =>
+			{
+				Cancel?.Invoke(this);
+			};
+			buttonContainerView.AddSubview(cancelButton);
+
+			var selectButton = new UIButton(UIButtonType.System);
+			selectButton.TranslatesAutoresizingMaskIntoConstraints = false;
+            selectButton.TitleLabel.Font = UIFont.BoldSystemFontOfSize(FontSize);
+			selectButton.SetTitle(SelectText, UIControlState.Normal);
+			selectButton.TouchUpInside += (s, e) =>
+			{
+				Select?.Invoke(this);
+			};
+			buttonContainerView.AddSubview(selectButton);
 
 			var views = NSDictionary.FromObjectsAndKeys(
-				new NSObject[] { DismissButton, DatePickerContainerView, DatePicker, ButtonContainerView, ButtonDividerView, CancelButton, SelectButton },
+				new NSObject[] { dismissButton, containerView, datePicker, buttonContainerView, buttonDividerView, cancelButton, selectButton },
 				new NSObject[] {
 					new NSString("DismissButton"), new NSString("DatePickerContainerView"), new NSString("datePicker"),
 					new NSString("ButtonContainerView"), new NSString("ButtonDividerView"), new NSString("CancelButton"),
@@ -163,8 +139,6 @@ namespace DatePicker
 			this.View.AddConstraints(NSLayoutConstraint.FromVisualFormat("H:|-5-[ButtonContainerView]-5-|", 0, null, views));
 
 			this.View.AddConstraints(NSLayoutConstraint.FromVisualFormat("V:|[DismissButton][DatePickerContainerView]-10-[ButtonContainerView(40)]-5-|", 0, null, views));
-
-			UpdateUI();
 		}
 
 		public double TransitionDuration(IUIViewControllerContextTransitioning transitionContext)
@@ -183,19 +157,19 @@ namespace DatePicker
 			{
 				fromViewController.View.UserInteractionEnabled = false;
 
-				containerView.AddSubview(DimmedView);
+				containerView.AddSubview(dimmedView);
 				containerView.AddSubview(toViewController.View);
 
 				var frame = toViewController.View.Frame;
 				frame.Y = toViewController.View.Bounds.Height;
 				toViewController.View.Frame = frame;
 
-				this.DimmedView.Alpha = 0f;
+				this.dimmedView.Alpha = 0f;
 
 				UIView.Animate(AnimatedTransitionDuration, 0, UIViewAnimationOptions.CurveEaseIn,
 				   () =>
 					{
-						this.DimmedView.Alpha = 0.5f;
+						this.dimmedView.Alpha = 0.5f;
 						frame = toViewController.View.Frame;
 						frame.Y = 0f;
 						toViewController.View.Frame = frame;
@@ -213,7 +187,7 @@ namespace DatePicker
 				UIView.Animate(AnimatedTransitionDuration, 0.1f, UIViewAnimationOptions.CurveEaseIn,
 				   () =>
 					{
-						this.DimmedView.Alpha = 0f;
+						this.dimmedView.Alpha = 0f;
 						var frame = fromViewController.View.Frame;
 						frame.Y = fromViewController.View.Bounds.Height;
 						fromViewController.View.Frame = frame;
