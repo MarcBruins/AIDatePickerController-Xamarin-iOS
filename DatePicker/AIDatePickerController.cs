@@ -2,7 +2,7 @@
 using Foundation;
 using UIKit;
 
-namespace DatePicker
+namespace AI
 {
 	public partial class AIDatePickerController : UIViewController, IUIViewControllerAnimatedTransitioning, IUIViewControllerTransitioningDelegate
 	{
@@ -13,8 +13,8 @@ namespace DatePicker
         public DateTime? MaximumDateTime { get; set; }
         public DateTime? MinimumDateTime { get; set; }
 	    public int MinuteInterval { get; set; } = 1;
-        public string SelectText { get; set; }
-        public Action<AIDatePickerController> Select { get; set; }
+        public string OkText { get; set; }
+        public Action<AIDatePickerController> Ok { get; set; }
         public string CancelText { get; set; }
         public Action<AIDatePickerController> Cancel { get; set; }
 
@@ -106,18 +106,18 @@ namespace DatePicker
 			};
 			buttonContainerView.AddSubview(cancelButton);
 
-			var selectButton = new UIButton(UIButtonType.System);
-			selectButton.TranslatesAutoresizingMaskIntoConstraints = false;
-            selectButton.TitleLabel.Font = UIFont.BoldSystemFontOfSize(FontSize);
-			selectButton.SetTitle(SelectText, UIControlState.Normal);
-			selectButton.TouchUpInside += (s, e) =>
+			var button = new UIButton(UIButtonType.System);
+			button.TranslatesAutoresizingMaskIntoConstraints = false;
+            button.TitleLabel.Font = UIFont.BoldSystemFontOfSize(FontSize);
+			button.SetTitle(this.OkText, UIControlState.Normal);
+			button.TouchUpInside += (s, e) =>
 			{
-				Select?.Invoke(this);
+				Ok?.Invoke(this);
 			};
-			buttonContainerView.AddSubview(selectButton);
+			buttonContainerView.AddSubview(button);
 
 			var views = NSDictionary.FromObjectsAndKeys(
-				new NSObject[] { dismissButton, containerView, datePicker, buttonContainerView, buttonDividerView, cancelButton, selectButton },
+				new NSObject[] { dismissButton, containerView, datePicker, buttonContainerView, buttonDividerView, cancelButton, button },
 				new NSObject[] {
 					new NSString("DismissButton"), new NSString("DatePickerContainerView"), new NSString("datePicker"),
 					new NSString("ButtonContainerView"), new NSString("ButtonDividerView"), new NSString("CancelButton"),
