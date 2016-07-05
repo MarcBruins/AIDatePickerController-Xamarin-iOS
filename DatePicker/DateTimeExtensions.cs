@@ -6,7 +6,7 @@ namespace DatePicker
 	//https://forums.xamarin.com/discussion/27184/convert-nsdate-to-datetime
 	public static class DateTimeExtensions
 	{
-		public static DateTime NSDateToDateTime(this NSDate nsDate)
+		public static DateTime ToDateTime(this NSDate nsDate)
 		{
 			if (nsDate == null) return new DateTime(); // ?
 
@@ -24,7 +24,7 @@ namespace DatePicker
 			return new DateTime(year, month, day, hour, minute, second, millisecond, DateTimeKind.Local);
 		}
 
-		public static NSDate DateTimeToNSDate(this DateTime dt)
+		public static NSDate ToNSDate(this DateTime dt)
 		{
 			if (dt == DateTime.MinValue) return null; // ?
 
