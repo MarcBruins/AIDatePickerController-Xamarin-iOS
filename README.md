@@ -6,7 +6,7 @@ AIDatePickerController
 
 <p align="center"><img src="https://github.com/alikaragoz/AIDatePickerController/blob/master/github-assets/aidatepickercontroller.gif"/></p>
 
-##Usage
+## Usage
 
 ```objc
 var picker = new AIDatePickerController(DateTime.Now.AddDays(1),
